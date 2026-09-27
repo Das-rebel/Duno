@@ -33,6 +33,17 @@ Retention-editing craft: impact on the $-slam, whoosh on crossfades, typewriter 
 Fixes Reproducibility 8.0: single entry point runs vo.sh → render → qa → cuts → score.
 - Effort: 0.5d. Accept: clean clone → `make video URL=…` → bundle, zero docs read.
 
+
+## New from the HaHaScore work (2026-Sep)
+
+Three operational improvements baked into Duno from building the v5/v6 HaHaScore video:
+
+- **Frame visibility rubric dimension** (`references/rubric.md` #14, weight ×1.0): catches the #1 category of broken frames — key visual elements rendered off-screen because of parent `padding`/`marginTop` cascading with child `top:` offsets. Audit every rendered video with `scripts/audit_render.py` before shipping.
+- **`scripts/audit_render.py`**: extracts 15-20 frames at evenly-spaced (or beat-mapped) timestamps so you can visually audit each one with the printed checklist. This is the single highest-leverage 5 minutes before shipping any rendered video. Reference: I extracted 17 timestamps across HaHaScore v5 and found 5 catastrophic breaks I'd missed by looking at frames I'd picked by hand.
+- **`references/lessons.md` additions (DO #11-15)**: flex-centering rule, global-VO-timestamp anchoring, closing slam must occlude not overlay, real B-roll rule, audit-by-frame-extraction rule.
+- **`references/tech-gotchas.md` (#15-18)**: render cache disk pressure (need 5-8 GB free), silent mid-render TypeError, caption drift across transition fades, position:absolute + parent padding = off-screen.
+
+
 ## P1 — New lanes (≈ 2 weeks)
 
 ### R5 · Voice lane — OmniVoice clone + dubs

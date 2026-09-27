@@ -17,6 +17,7 @@ Run: `python3 scripts/score.py 9 9 9 8.5 9 8.5 9 9 8 9.5 8.5 10 8`
 | 10 | **Factual integrity** | ×1.3 | Any unsourced number | Sourced but overclaimed | Fact sheet traced; illustrative figures disclaimed with assumptions; contested claims softened |
 | 11 | **Pacing & sync** | ×1.0 | Scenes fight the VO | Rough sync | Boundaries in speech gaps; URL dwell ≥4s; no rushed stretches |
 | 12 | **Platform readiness** | ×0.8 | One file | Master + 1 cut | 16:9 + 9:16 + 1:1 + thumbnail + copy pack w/ attribution & disclaimers |
+| 14 | **Frame visibility** | ×1.0 | Key elements off-canvas or clipped | Most elements visible; 1-2 missing per scene | Every key visual (numbers, charts, waveforms, struck text) appears in-frame within the scene window the VO mentions it |
 | 13 | **Reproducibility** | ×0.5 | Unreproducible | Rebuild by archaeology | One-command rebuild; durations single-sourced; honest limitations in copy |
 
 ## Grades

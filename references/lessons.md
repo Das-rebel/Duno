@@ -17,6 +17,12 @@
 13. **Don't center content horizontally and forget vertically.** Top-heavy scenes read as templates. `justifyContent: center`.
 14. **Don't launch without the bundle.** Muted-viewer captions, vertical cut, thumbnail, and a disclaimer-bearing description are part of "done".
 
+
+15. **Don't put visual elements at deep `top: 500+` offsets** in a parent with `paddingTop` or `marginTop`. The offset compounds with the parent's offset. Either use flex centering OR use absolute positioning relative to the page (not the parent).
+16. **Don't render the closing as overlay on the previous scene.** It needs to occlude. Otherwise the previous scene's static elements compete with the closing's animated elements.
+17. **Don't run a render without first running `npx tsc --noEmit`** even though Remotion ignores type errors at bundle time. Real runtime errors (e.g., a typo'd variable `birp` vs `birb` in a scene) crash the render at frame N mid-render with `ReferenceError: birp is not defined` — leaving you with a corrupted half-output and no clear pointer to the source. TSC catches it instantly.
+18. **Don't ship without rendering at multiple offsets and visually auditing each one.** A render that "looks fine" at frame 0 can have catastrophic layout collapse at frame 200. The 5 minutes it takes to extract 15-20 frames at evenly-spaced timestamps is cheaper than one re-render cycle after a community member spots the bug.
+
 ## DO
 
 1. **Write the VO first.** It's the spine; visuals hang off its beat map.
@@ -29,3 +35,10 @@
 8. **Council before shipping** — 4 parallel lenses, criticals block, fixes re-render, re-audit only what changed.
 9. **Steal engines shamelessly.** OpenMontage's Remotion patterns (stat cards, terminal typing, caption overlay) are public — adopt, attribute, improve.
 10. **Keep an examples/ folder** of past versions with scores — it's how you prove the pipeline works and onboard collaborators.
+
+11. **Audit by extracting frames at every beat midpoint**, not at hand-picked moments. The v5 HaHaScore rendered with 8 scenes — I screenshotted at the S2, S3, and S7 midpoints (the ones that looked good). Auditing at 17 timestamps revealed 5 catastrophic breaks I'd missed: waveform timeline rendered off-screen, σ gate appearing 3s after the VO mentioned it, struck-through climax text missing, 355M/1M numbers missing entirely. Mid-animations and overlaps are the real killers — frame 0 and frame 50 lie.
+12. **Use `flex: column/row` with `alignItems: center, justifyContent: center` for EVERY scene**, not `paddingTop` and `position: absolute` children. In v4 HaHaScore, the S4 waveform timeline was positioned `top: 540` inside a `paddingTop: 48` parent — the parent pushed the child to y≈886, off the 1080p canvas. Always visible to the source, never visible in the render. Flex centering makes it impossible to clip.
+13. **Anchor animation springs to global VO timestamps, not scene-local frames.** The S3 σ gate in v5 used `spring({frame: frame - 360, fps, ...})` — that was local frame 360 of 420 = 12s into S3 = global 29.5s, but the VO said "the wager" at global 22s. Fix: compute spring delays as `(whisper_end_global - scene_visual_start) * fps`. Every visual should land within ±0.5s of the VO beat it illustrates.
+14. **The closing slam must fully replace, not overlay.** In v5 S7, the "the laugh is in the room" closed over the still-visible YouTube player for ~3 seconds — they competed for the same screen space. Fix: give the closing its own scene with `position: absolute, inset: 0, zIndex: 10` and the closing slam elements at higher z, so the previous scene's content is occluded by the new scene's background.
+15. **Real B-roll fixes the whole scene.** In S4 (the gold set), the on-stage footage of Mike Birbiglia performing live made the moment land. Without it, the same animation timeline read as a chart, not a comedy club. Use real-licensed or self-recorded comedian footage when the scene IS the demo of "we tested this on real standup." A silhouette of the same scene reads as placeholder; a 10s real clip reads as proof.
+

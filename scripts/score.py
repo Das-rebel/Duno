@@ -9,9 +9,9 @@ DIMS = [
     ("Color & contrast",         0.8), ("Captions & accessibility", 1.0),
     ("Audio",                    1.2), ("Factual integrity",        1.3),
     ("Pacing & sync",            1.0), ("Platform readiness",       0.8),
-    ("Reproducibility",          0.5),
+    ("Reproducibility",          0.5), ("Frame visibility",        1.0),
 ]
-V11 = [9, 9, 9, 8.5, 9, 8.5, 9, 9, 8, 9.5, 8.5, 10, 8]
+V11 = [9, 9, 9, 8.5, 9, 8.5, 9, 9, 8, 9.5, 8.5, 10, 8, 9]
 
 def bar(score):
     filled = round(score / 10 * 20)
@@ -19,7 +19,7 @@ def bar(score):
 
 def main():
     scores = [float(x) for x in sys.argv[1:]] if len(sys.argv) > 1 else V11
-    if len(scores) != 13:
+    if len(scores) != len(DIMS):
         sys.exit(f"need 13 scores, got {len(scores)}")
     for s in scores:
         if not 0 <= s <= 10:
