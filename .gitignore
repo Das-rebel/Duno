@@ -31,3 +31,4 @@ CODEX_PLUGIN_FOLLOWUPS.md
 node_modules/
 out/
 *.m4a
+frames/
