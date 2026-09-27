@@ -46,6 +46,8 @@ python3 ../scripts/score.py   # ship gate: weighted ≥ 8.0
 - [`references/tech-gotchas.md`](references/tech-gotchas.md) — environment landmines and fixes
 - [`SCORECARD.md`](SCORECARD.md) — the video that taught us all this, scored
 - [`council/prompts.md`](council/prompts.md) — copy-paste council prompts
+- [`ROADMAP.md`](ROADMAP.md) — the 10× plan mined from 17.8K bookmarks (LTX-2, Seedance, Marlin QA, voice-clone dubs, avatar lanes, hook-optimization loop)
+- [`references/vault-research.md`](references/vault-research.md) — the deep study behind it
 
 ## Relationship to upstream
 
