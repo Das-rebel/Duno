@@ -1,138 +1,58 @@
-# /brag
+# Duno
 
-**You built it. Now brag.**
+> You built it. Now **duno** — brag about it properly.
+> A hardened fork of [latent-spaces/brag](https://github.com/latent-spaces/brag), rebuilt after **11 iterations** of shipping a real product-launch video (A3M Router).
 
-[![the /brag launch site — you built it, now brag](docs/assets/hero.png)](https://latent-spaces.github.io/brag/)
+[![fork parent](https://img.shields.io/badge/fork%20of-latent--spaces%2Fbrag-blue)](https://github.com/latent-spaces/brag) [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-`/brag` is a Claude Code skill that turns the project you created into a short, shareable launch video — music, motion, and share copy included. One command, powered by [Hyperframes](https://hyperframes.heygen.com/).
+## What Duno fixes
 
-The looping video on the [launch site](https://latent-spaces.github.io/brag/) was made by `/brag` on this very repo. 
+Upstream `/brag` turns your project into a launch video with Hyperframes. Shipping a real one end-to-end surfaced every failure mode that only appears past the demo stage. Duno bakes those lessons in:
 
-## New: `/brag-slim`
+| # | Failure we hit | Duno's answer |
+|---|---|---|
+| 1 | Narration that reads the screen (double delivery) | **VO-first pipeline**: script the voiceover as *story*, screen shows *proof* — never the same words (`references/pipeline.md` §3) |
+| 2 | Static frames with text on black scored 3.2/10 | **Remotion-first motion**: `spring()` physics, typewriters, count-ups, true `TransitionSeries` crossfades (`templates/remotion-video/`) |
+| 3 | VO trimmed mid-sentence to fit video | **Video fits the VO**: whisper-transcribe the VO, place scene boundaries in speech gaps (`scripts/vo.sh`) |
+| 4 | An AI-written claim off by **77×** ("a tenth of a cent" vs actual 7.68¢) | **4-lens agent council** before shipping: narrative, accuracy, visual QA, launch strategy (`council/prompts.md`) |
+| 5 | Citing a benchmark whose PR was contested | **Fact-sheet gate**: every number traced to source; contested claims softened, disclaimers on illustrative figures |
+| 6 | ffmpeg lacks `subtitles` filter / xfade chains break / Remotion's bundled ffprobe segfaults | **Field-tested gotchas**: 11 documented environment fixes (`references/tech-gotchas.md`) |
+| 7 | "It's done" ≠ shippable | **Platform bundle**: 16:9 master + 9:16 + 1:1 blur-pad cuts, thumbnail, YouTube/HN/X/LinkedIn copy pack with attribution (`scripts/social_cuts.sh`) |
+| 8 | "Looks good" is not a quality bar | **13-dimension weighted rubric** with a ≥8.0 ship gate (`references/rubric.md`, `scripts/score.py`) |
 
-**The same /brag, rebuilt lean for Opus 5.5.**
-
-A smooth launch video, designed for your specific project, with its own soundtrack and share copy.
-
-No Hyperframes, no bundled assets, same creative rules.
-
-Just tell Opus 5.5: *let's /brag about this.*
-
-On Opus 5.5, `/brag` switches to `/brag-slim` automatically. Run `/brag --full` to keep the classic Hyperframes workflow.
-
-**Install just `/brag-slim`:**
-
-```bash
-npx skills add https://github.com/latent-spaces/brag --skill brag-slim
-```
-
-Already have the `/brag` plugin? `/brag-slim` is included from version 0.4.0. Run `claude plugin update brag` to get it.
-
-## Install /brag
+## Quickstart
 
 ```bash
-/plugin marketplace add latent-spaces/brag
-/plugin install brag@brag
+# 1. Say to your agent:
+/duno
+
+# 2. Or run the pipeline manually (see SKILL.md for the full walkthrough):
+cp -r templates/remotion-video my-video && cd my-video && npm install
+bash ../scripts/vo.sh script.txt en-US-GuyNeural   # → voiceover.mp3 + timing map
+npx remotion render src/index.tsx Video out/master.mp4 --codec h264 --crf 18
+bash ../scripts/social_cuts.sh out/master.mp4 out/
+python3 ../scripts/score.py   # ship gate: weighted ≥ 8.0
 ```
 
-Then run `/brag` inside any project. The plugin includes `/brag-slim` too.
+## The pipeline in one line
 
-**Any other agent** — one command via the [`skills`](https://github.com/vercel-labs/skills) CLI (Cursor, Codex, Copilot, Gemini CLI, opencode, and more):
+**facts → VO script → whisper timing → Remotion scenes on beat gaps → render → frame-verify → 4-lens council → fixes → cuts + thumbnail + copy pack → rubric ≥ 8.0 → ship.**
 
-```bash
-npx skills add https://github.com/latent-spaces/brag --skill brag
-```
+## Docs
 
-Add `-g` to install globally (available in every project); drop it to scope to the current one. ([browse on skills.sh](https://www.skills.sh/latent-spaces/brag/brag))
+- [`references/pipeline.md`](references/pipeline.md) — the full strategy: v1→v11 journey, what worked, what died
+- [`references/rubric.md`](references/rubric.md) — scoring dimensions, weights, ship gate
+- [`references/lessons.md`](references/lessons.md) — do's and don'ts (each one cost us a render)
+- [`references/tech-gotchas.md`](references/tech-gotchas.md) — environment landmines and fixes
+- [`SCORECARD.md`](SCORECARD.md) — the video that taught us all this, scored
+- [`council/prompts.md`](council/prompts.md) — copy-paste council prompts
 
-<details>
-<summary>No installer? Copy the skill directly.</summary>
+## Relationship to upstream
 
-```bash
-rsync -a --exclude '.DS_Store' skills/brag/ ~/.claude/skills/brag/
-rsync -a --exclude '.DS_Store' skills/brag-slim/ ~/.claude/skills/brag-slim/  # optional: the /brag-slim command
-```
-
-Restart Claude Code after copying.
-</details>
-
-### Also works with
-
-This repo exposes the skill at every agent's standard discovery path via symlinks. No extra config needed.
-
-| Agent | How it discovers |
-|---|---|
-| **Google Antigravity** | Auto-detects from `.agents/skills/brag/` at project root or `~/.gemini/config/skills/brag/` globally |
-| **opencode** | Auto-detects from `.opencode/skills/brag/` at project root |
-| **Codex CLI** | Reads `.agents/skills/brag/`, walking up to repo root |
-| **Claude Code** | Also reads `.claude/skills/brag/` (in addition to the `.claude-plugin/` marketplace install above) |
-| **Other agents** | Point custom instructions at `skills/brag/SKILL.md` — see [`docs/other-agents.md`](docs/other-agents.md) |
-
-> **Windows users:** Git requires `git config core.symlinks true` (or `git clone -c core.symlinks=true`) and Windows Developer Mode or Administrator privileges to create symlinks. If symlinks don't work on your system, copy `skills/brag/` to the agent's skill directory manually instead.
-
-## Use it
-
-From any project directory, ask your agent:
-
-```text
-let's /brag
-```
-
-Or steer the tone:
-
-```text
-/brag --tone "fake Series A launch from 2016"
-```
-
-Voiceover is off by default. Enable it explicitly with:
-
-```text
-/brag --voice
-```
-
-Narration uses Kokoro through Hyperframes when enabled.
-
-You get a `brag-output/` folder with the plan, a composition brief, share copy, and the rendered `brag.mp4`.
-
-## How it works
-
-`/brag` owns the story — the product angle, tone, and which moments to show. It hands a focused brief to [Hyperframes](https://hyperframes.heygen.com/), which builds, times, and renders the video.
-
-## Requirements
-
-- An agent that supports Agent Skills — Claude Code, opencode, Codex CLI, or any agent with custom instructions (see "Also works with" above)
-- Node.js 22+
-- FFmpeg on `PATH`
-- Hyperframes CLI — `npx hyperframes` (check it with `npx hyperframes doctor`)
-
-## What's in this repo
-
-- `skills/brag/` — the skill, references, and bundled music + SFX
-- `skills/brag-slim/` — `/brag-slim`, the single-file skill for Claude Opus 5.5
-- `examples/` — fake product sites used as a benchmark suite
-- `docs/` — the launch site (GitHub Pages)
-- `.claude-plugin/` — plugin manifest + marketplace catalog
-- `.claude/skills/brag/` — symlink → `skills/brag/` (Claude Code discovery)
-- `.agents/skills/brag/` — symlink → `skills/brag/` (Codex CLI + opencode discovery)
-- `.opencode/skills/brag/` — symlink → `skills/brag/` (opencode discovery)
+This is a fork: upstream's Hyperframes skill is preserved untouched under `skills/brag/` (and `brag-slim/`). Duno adds a parallel, motion-first pipeline and the quality system around it. Upstream's LICENSE (MIT) and examples remain intact.
 
 ## Credits
 
-- Music — [ende.app](https://ende.app/en) "Happy Beats / Business Moves"
-- Sound effects — [Kenney](https://kenney.nl/)
-- Video generation — [Hyperframes](https://hyperframes.heygen.com/)
-- Fake demo sites — built with [Impeccable](https://impeccable.style/)
-
-## Contributing
-
-Contributions, ideas, and new demo brags are welcome — open an issue or a PR.
-
-## Star History
-
-<a href="https://www.star-history.com/?type=date&repos=latent-spaces%2Fbrag">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=latent-spaces/brag&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=latent-spaces/brag&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=latent-spaces/brag&type=date&legend=top-left" />
- </picture>
-</a>
+- [latent-spaces/brag](https://github.com/latent-spaces/brag) — the original skill and idea
+- [Remotion](https://remotion.dev) — the composition engine Duno standardizes on
+- Kevin MacLeod (incompetech.com) — default music suggestions, CC-BY
