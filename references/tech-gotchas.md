@@ -25,3 +25,9 @@
 10. **Social cuts:** blur-pad beats center-crop (nothing clipped): `scale=1080:1920:force_original_aspect_ratio=increase,crop=…,gblur=sigma=26,eq=brightness=-0.08[bg]` + fg `scale=1080:-2` centered. See `scripts/social_cuts.sh`.
 
 11. **Single source of truth for duration:** theme `TOTAL` (frames) is the number; Root composition `durationInFrames={TOTAL}`; scene durations sum − (n−1)×15 must equal it. Write an assert; we shipped a stale cut when they diverged.
+
+12. **`sidechaincompress` truncates the whole graph at the sidechain's RAW input length** — pre-padding the key inside the graph (`apad=whole_dur`) does NOT save you; output still ends at the unpadded EOF (63.0s ghost). Fix: pre-pad the VO to a WAV file in a separate pass, then feed that file in. Verified ffmpeg 8.1.1.
+
+13. **Remotion ffmpeg-wrapper recursion**: if your `ffmpeg` wrapper resolves ffmpeg via `command -v ffmpeg` at runtime, Remotion puts the compositor dir FIRST on PATH → the wrapper finds ITSELF → infinite exec loop (silently burned 2:37 CPU). Fix: bake the ABSOLUTE system ffmpeg path into the wrapper at install time. `templates/remotion-video/scripts/fix-remotion-binaries.js` does both fixes automatically via npm `postinstall`.
+
+14. **Remotion placeholder audio shorter than the composition can stall the stitcher** after "Rendered N/N" — ship placeholder audio at (or above) full composition length.

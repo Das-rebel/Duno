@@ -27,3 +27,7 @@ skills-lock.json
 CODEX_PLUGIN_FOLLOWUPS.md
 
 .codesk
+# duno template artifacts
+node_modules/
+out/
+*.m4a

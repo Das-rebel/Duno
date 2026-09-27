@@ -18,14 +18,16 @@
  12  Platform readiness       10.0  ×0.8  ████████████████████░  8.00
  13  Reproducibility           8.0  ×0.5  ████████████████░░░░   4.00
 ──────────────────────────────────────────────────────────────────
-  WEIGHTED TOTAL (normalized /13.2)         8.86 / 10    GRADE: B (top of band, 0.14 to A)
+  WEIGHTED TOTAL (normalized /13.2)         8.86 / 10    GRADE: B (v11)
+  ── after P0 sound-design (brag-v12): Audio 8→9 ──
+  WEIGHTED TOTAL                            8.95 / 10    GRADE: B (0.05 to A)
   SHIP GATE (≥8.0, no dim <6)                    ✅ PASS
 ══════════════════════════════════════════════════════════════════
 ```
 
 Deductions, honestly:
 - **Motion 8.5** — particles are static-position pulses; no camera moves (Ken Burns / push-ins) yet.
-- **Audio 8.0** — single TTS voice, zero ducking automation under VO peaks; music bed is stock CC-BY.
+- ~~**Audio 8.0** — single TTS voice, zero ducking automation under VO peaks~~ FIXED in v12: 11 procedural SFX events on the beat map + sidechain-ducked music (R2). Remaining: stock TTS voice → voice-clone lane (R5).
 - **Repro 8.0** — rebuild is documented but multi-command; needs a one-shot `make`.
 - **Pacing 8.5** — CTA beat carries 5 on-screen events; one more second of dwell would loosen it.
 
