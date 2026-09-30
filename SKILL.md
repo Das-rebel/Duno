@@ -78,6 +78,17 @@ python3 scripts/score.py   # weighted rubric — ship gate ≥ 8.0
 
 Copy pack: YouTube description (2 hook lines, timestamps, **music attribution**, **illustrative-figure disclaimer**), Show HN (facts + honest limitations + ask), 5-post X thread (post 1 standalone), LinkedIn blurb.
 
+## Two parallel rendering lanes
+
+Duno ships **two video engines**. Choose by what the scene needs:
+
+| Lane | Best for | Use when |
+|---|---|---|
+| **Remotion** (`templates/remotion-video/`) | React-component videos, stateful scenes, automatic transitions | Compositing, captions, audio mixing, social cuts — the default |
+| **fframes** (`templates/fframes/` + `scripts/fframes-init.sh`) | GPU-rendered motion graphics, SVG-with-Rust animation, fast drafts | Title cards, social clips, motion-graphic-heavy scenes where Remotion's React-Spring overhead is too much |
+
+Both lanes share the Duno voice (`scripts/vo.sh`), audit (`scripts/audit_render.py`), score (`scripts/score.py`), and quality gate. Use `bash scripts/fframes-init.sh <name>` to scaffold an fframes project.
+
 ## Ship gate
 
 `scripts/score.py` weighted total ≥ **8.0**, no dimension < 6, zero unresolved critical council flags. Below gate → fix, don't ship.
